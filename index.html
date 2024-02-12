@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Signup Form</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+
+        #main-div {
+            width: 100%;
+            max-width: 500px; 
+            text-align: center;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            box-sizing: border-box;
+            border: 2px solid transparent; 
+            animation: fillBorder 5s infinite alternate; 
+        }
+
+        #btn-container {
+            margin-bottom: 20px;
+        }
+
+        #login-btn, #signup-btn {
+            margin: 0 10px;
+            padding: 12px 24px; 
+            border: none; 
+            background-color: transparent; 
+            color: #3498db;
+            font-size: 16px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            outline: none; 
+        }
+
+        #login-btn.active, #signup-btn.active {
+            color: #2980b9; 
+            border-bottom: 2px solid #2980b9; 
+        }
+
+        #login-btn:hover, #signup-btn:hover {
+            color: #2980b9; 
+        }
+
+        #login-form, #signup-form {
+            display: none;
+            margin-top: 20px;
+            max-width: 80%;
+            margin: auto;
+        }
+
+        .input-field {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: calc(100% - 24px); 
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none; 
+        }
+
+        .btn-login {
+            width: 100%;
+            background-color: #2ecc71;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none; 
+        }
+
+        .btn-login:hover {
+            background-color: #27ae60;
+        }
+
+        
+        @keyframes fillBorder {
+            0% { border-color: transparent; }
+            50% { border-color: #2980b9; }
+            100% { border-color: transparent; }
+        }
+    </style>
+</head>
+<body>
+    <div id="main-div">
+        <div id="btn-container">
+            <button class="btn active" id="login-btn">Login</button> 
+            <button class="btn" id="signup-btn">Sign Up</button>
+        </div>
+
+        <div id="login-form" style="display: block;"> 
+            <div class="input-field">
+                <input type="email" id="login-email" placeholder="Email">
+            </div>
+            <div class="input-field">
+                <input type="password" id="login-password" placeholder="Password">
+            </div>
+            <button class="btn-login" id="login-submit">Login</button>
+        </div>
+        
+        <div id="signup-form">
+            <div class="input-field">
+                <input type="email" id="signup-email" placeholder="Email">
+            </div>
+            <div class="input-field">
+                <input type="password" id="signup-password" placeholder="Password">
+            </div>
+            <button class="btn-login" id="signup-submit">Sign Up</button>
+        </div>
+    </div>
+
+    <!-- Firebase Initialization and Authentication -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCoU33SK2c-gEwqtwqc9o9d0GdpiWMcWX4",
+    authDomain: "signup-cd8d2.firebaseapp.com",
+    projectId: "signup-cd8d2",
+    storageBucket: "signup-cd8d2.appspot.com",
+    messagingSenderId: "171091309074",
+    appId: "1:171091309074:web:78d3e0aca4c17a12dc5ecb",
+    measurementId: "G-FBFJYY40M1"
+        };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        
+        // Login function
+        document.getElementById("login-btn").addEventListener("click", function() {
+            document.getElementById("login-form").style.display = "block";
+            document.getElementById("signup-form").style.display = "none";
+            document.getElementById("login-btn").classList.add("active");
+            document.getElementById("signup-btn").classList.remove("active");
+        });
+
+        // Signup function
+        document.getElementById("signup-btn").addEventListener("click", function() {
+            document.getElementById("signup-form").style.display = "block";
+            document.getElementById("login-form").style.display = "none";
+            document.getElementById("signup-btn").classList.add("active");
+            document.getElementById("login-btn").classList.remove("active");
+        });
+
+        // Login submit function
+        document.getElementById("login-submit").addEventListener("click", async () => {
+            const email = document.getElementById("login-email").value;
+            const password = document.getElementById("login-password").value;
+            
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                window.alert("Login success");
+                console.log("User logged in successfully:", userCredential.user);
+                
+            } catch (error) {
+                console.error("Login failed:", error.message);
+               
+            }
+        });
+
+        // Signup submit function
+        document.getElementById("signup-submit").addEventListener("click", async () => {
+            const email = document.getElementById("signup-email").value;
+            const password = document.getElementById("signup-password").value;
+            
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                console.log("User signed up successfully:", userCredential.user);
+                window.alert("Signup success");
+                
+            } catch (error
+
+) {
+                console.error("Sign up failed:", error.message);
+               
+            }
+        });
+    </script>
+</body>
+</html>
