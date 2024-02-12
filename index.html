@@ -177,6 +177,7 @@
                 console.log("User logged in successfully:", userCredential.user);
                 
             } catch (error) {
+                window.alert("Invalid Credentials!");
                 console.error("Login failed:", error.message);
                
             }
@@ -195,7 +196,8 @@
             } catch (error
 
 ) {
-                console.error("Sign up failed:", error.message);
+                window.alert("user already registered!");
+    console.error("Sign up failed:", error.message);
                
             }
         });
